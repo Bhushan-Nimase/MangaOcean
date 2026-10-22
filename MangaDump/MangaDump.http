@@ -1,0 +1,81 @@
+@host = https://localhost:7197
+
+### Genres (seeded ids: 1 Action, 2 Adventure, 3 Comedy, 4 Drama, 5 Fantasy, 6 Horror, 7 Mystery, 8 Romance, 9 Sci-Fi, 10 Slice of Life)
+GET {{host}}/api/genres
+
+### Create a manga
+POST {{host}}/api/manga
+Content-Type: application/json
+
+{
+  "title": "One Piece",
+  "description": "A pirate adventure.",
+  "author": "Eiichiro Oda",
+  "artist": "Eiichiro Oda",
+  "status": "Ongoing",
+  "releaseYear": 1997,
+  "genreIds": [1, 2, 3]
+}
+
+### List / search / filter
+GET {{host}}/api/manga?search=piece&genre=action&status=Ongoing&page=1&pageSize=20
+
+### Manga detail by slug
+GET {{host}}/api/manga/one-piece
+
+### Update manga (id 1)
+PUT {{host}}/api/manga/1
+Content-Type: application/json
+
+{
+  "title": "One Piece",
+  "description": "Updated description.",
+  "author": "Eiichiro Oda",
+  "artist": "Eiichiro Oda",
+  "status": "Ongoing",
+  "releaseYear": 1997,
+  "genreIds": [1, 2]
+}
+
+### Upload cover (replace the file path with a real image)
+POST {{host}}/api/manga/1/cover
+Content-Type: multipart/form-data; boundary=----Boundary
+
+------Boundary
+Content-Disposition: form-data; name="file"; filename="cover.jpg"
+Content-Type: image/jpeg
+
+< C:\path\to\cover.jpg
+------Boundary--
+
+### Create chapter
+POST {{host}}/api/manga/1/chapters
+Content-Type: application/json
+
+{ "number": 1, "title": "Romance Dawn" }
+
+### Upload chapter pages (field name must be "files"; repeat the part for each page)
+POST {{host}}/api/chapters/1/pages
+Content-Type: multipart/form-data; boundary=----Boundary
+
+------Boundary
+Content-Disposition: form-data; name="files"; filename="001.jpg"
+Content-Type: image/jpeg
+
+< C:\path\to\001.jpg
+------Boundary
+Content-Disposition: form-data; name="files"; filename="002.jpg"
+Content-Type: image/jpeg
+
+< C:\path\to\002.jpg
+------Boundary--
+
+### Reader endpoint (pages + previous/next chapter)
+GET {{host}}/api/manga/one-piece/chapters/1
+
+### Delete a page / chapter / manga
+DELETE {{host}}/api/pages/1
+###
+DELETE {{host}}/api/chapters/1
+###
+DELETE {{host}}/api/manga/1
