@@ -5,7 +5,8 @@ export function resumeTarget(state, firstNumber = state?.firstChapterNumber) {
     return firstNumber == null ? null : { number: firstNumber, page: 1, label: `Start reading · Ch. ${firstNumber}` }
   }
 
-  const { lastChapterNumber: last, lastPageNumber: page, lastChapterPageCount: count, nextChapterNumber: next } = state
+  const { lastChapterNumber: last, lastPageNumber, lastChapterPageCount: count, nextChapterNumber: next } = state
+  const page = lastPageNumber && lastPageNumber > 0 ? lastPageNumber : 1
   const finishedChapter = count != null && page >= count
 
   if (finishedChapter && next != null) {

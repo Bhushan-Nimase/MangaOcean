@@ -15,9 +15,9 @@ export default function Admin() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold">Admin</h1>
+      <h1 className="mb-6 font-display text-3xl font-bold">Admin</h1>
 
-      <div className="mb-6 flex gap-2 border-b border-zinc-800">
+      <div className="mb-6 flex gap-6 border-b border-line">
         {[
           ['manga', 'Manga'],
           ['chapters', 'Chapters & pages'],
@@ -26,8 +26,8 @@ export default function Admin() {
           <button
             key={key}
             onClick={() => setTab(key)}
-            className={`-mb-px border-b-2 px-4 py-2 text-sm transition ${
-              tab === key ? 'border-violet-500 text-white' : 'border-transparent text-zinc-400 hover:text-white'
+            className={`-mb-px border-b-2 pb-2 text-sm transition ${
+              tab === key ? 'border-accent font-semibold text-ink' : 'border-transparent text-mute hover:text-ink'
             }`}
           >
             {label}
@@ -35,11 +35,7 @@ export default function Admin() {
         ))}
       </div>
 
-      {notice && (
-        <p className={`mb-4 rounded-lg p-3 text-sm ${notice.type === 'ok' ? 'bg-emerald-500/10 text-emerald-300' : 'bg-red-500/10 text-red-300'}`}>
-          {notice.text}
-        </p>
-      )}
+      {notice && <p className={`mb-4 ${notice.type === 'ok' ? 'notice-ok' : 'notice-err'}`}>{notice.text}</p>}
 
       {tab === 'manga' && <MangaTab flash={flash} />}
       {tab === 'chapters' && <ChaptersTab flash={flash} />}
@@ -48,19 +44,21 @@ export default function Admin() {
   )
 }
 
-/* ---------------- Manga ---------------- */
+/* ---------------- Manga: create, edit, delete ---------------- */
 
 function MangaTab({ flash }) {
   const [genres, setGenres] = useState([])
   const [list, setList] = useState([])
   const [form, setForm] = useState(emptyForm)
+  const [editing, setEditing] = useState(null) // { id, title } while editing an existing manga
   const [cover, setCover] = useState(null)
+  const [fileKey, setFileKey] = useState(0) // changing it clears the file input
   const [busy, setBusy] = useState(false)
 
   const load = useCallback(() => api.manga.list({ pageSize: 100 }).then((r) => setList(r.items)), [])
 
   useEffect(() => {
-    api.genres.list().then(setGenres)
+    api.genres.list().then((g) => setGenres(g || [])).catch((e) => flash('err', e.message))
     load().catch((e) => flash('err', e.message))
   }, [load, flash])
 
@@ -71,22 +69,47 @@ function MangaTab({ flash }) {
       genreIds: f.genreIds.includes(id) ? f.genreIds.filter((g) => g !== id) : [...f.genreIds, id],
     }))
 
+  const reset = () => {
+    setForm(emptyForm)
+    setEditing(null)
+    setCover(null)
+    setFileKey((k) => k + 1)
+  }
+
+  const startEdit = async (m) => {
+    try {
+      const d = await api.manga.get(m.slug)
+      setEditing({ id: d.id, title: d.title })
+      setForm({
+        title: d.title,
+        author: d.author ?? '',
+        artist: d.artist ?? '',
+        status: d.status,
+        releaseYear: d.releaseYear ?? '',
+        description: d.description ?? '',
+        genreIds: d.genres.map((g) => g.id),
+      })
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } catch (err) {
+      flash('err', err.message)
+    }
+  }
+
   const submit = async (e) => {
     e.preventDefault()
     setBusy(true)
     try {
-      const created = await api.manga.create({
+      const payload = {
         ...form,
         releaseYear: form.releaseYear ? Number(form.releaseYear) : null,
         author: form.author || null,
         artist: form.artist || null,
         description: form.description || null,
-      })
-      if (cover) await api.manga.uploadCover(created.id, cover)
-      flash('ok', `Created "${created.title}"`)
-      setForm(emptyForm)
-      setCover(null)
-      e.target.reset()
+      }
+      const saved = editing ? await api.manga.update(editing.id, payload) : await api.manga.create(payload)
+      if (cover) await api.manga.uploadCover(saved.id, cover)
+      flash('ok', editing ? `Updated "${saved.title}"` : `Created "${saved.title}"`)
+      reset()
       await load()
     } catch (err) {
       flash('err', err.message)
@@ -100,6 +123,7 @@ function MangaTab({ flash }) {
     try {
       await api.manga.remove(m.id)
       flash('ok', `Deleted "${m.title}"`)
+      if (editing?.id === m.id) reset()
       await load()
     } catch (err) {
       flash('err', err.message)
@@ -108,8 +132,16 @@ function MangaTab({ flash }) {
 
   return (
     <div className="grid gap-10 lg:grid-cols-2">
-      <form onSubmit={submit} className="space-y-3">
-        <h2 className="text-lg font-semibold">Add manga</h2>
+      <form onSubmit={submit} className="card space-y-3 p-5">
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-xl font-bold">{editing ? `Edit “${editing.title}”` : 'Add manga'}</h2>
+          {editing && (
+            <button type="button" className="btn-quiet" onClick={reset}>
+              Cancel
+            </button>
+          )}
+        </div>
+
         <input className="input" placeholder="Title *" value={form.title} onChange={set('title')} required maxLength={300} />
         <div className="grid grid-cols-2 gap-3">
           <input className="input" placeholder="Author" value={form.author} onChange={set('author')} />
@@ -119,9 +151,24 @@ function MangaTab({ flash }) {
               <option key={s}>{s}</option>
             ))}
           </select>
-          <input className="input" type="number" placeholder="Year" min="1900" max="2100" value={form.releaseYear} onChange={set('releaseYear')} />
+          <input
+            className="input"
+            type="number"
+            placeholder="Year"
+            min="1900"
+            max="2100"
+            value={form.releaseYear}
+            onChange={set('releaseYear')}
+          />
         </div>
-        <textarea className="input" rows={4} placeholder="Description" value={form.description} onChange={set('description')} maxLength={5000} />
+        <textarea
+          className="input"
+          rows={4}
+          placeholder="Description"
+          value={form.description}
+          onChange={set('description')}
+          maxLength={5000}
+        />
 
         <div className="flex flex-wrap gap-2">
           {genres.map((g) => (
@@ -129,9 +176,7 @@ function MangaTab({ flash }) {
               type="button"
               key={g.id}
               onClick={() => toggleGenre(g.id)}
-              className={`rounded-full border px-3 py-1 text-xs transition ${
-                form.genreIds.includes(g.id) ? 'border-violet-500 bg-violet-500/20 text-violet-200' : 'border-zinc-700 text-zinc-400'
-              }`}
+              className={`chip ${form.genreIds.includes(g.id) ? 'chip-on' : ''}`}
             >
               {g.name}
             </button>
@@ -139,27 +184,38 @@ function MangaTab({ flash }) {
         </div>
 
         <div>
-          <label className="mb-1 block text-xs text-zinc-400">Cover image</label>
-          <input type="file" accept="image/*" onChange={(e) => setCover(e.target.files[0] ?? null)} className="text-sm text-zinc-400" />
+          <label className="label">{editing ? 'Replace cover (optional)' : 'Cover image'}</label>
+          <input
+            key={fileKey}
+            type="file"
+            accept="image/*"
+            onChange={(e) => setCover(e.target.files[0] ?? null)}
+            className="text-sm text-mute"
+          />
         </div>
 
         <button className="btn" disabled={busy}>
-          {busy ? 'Saving…' : 'Create manga'}
+          {busy ? 'Saving…' : editing ? 'Save changes' : 'Create manga'}
         </button>
       </form>
 
       <div>
-        <h2 className="mb-3 text-lg font-semibold">All manga ({list.length})</h2>
-        <ul className="divide-y divide-zinc-800 rounded-xl border border-zinc-800">
+        <h2 className="mb-3 font-display text-xl font-bold">All manga ({list.length})</h2>
+        <ul className="card divide-y divide-line overflow-hidden">
           {list.map((m) => (
             <li key={m.id} className="flex items-center justify-between gap-3 px-4 py-2.5 text-sm">
               <span className="truncate">{m.title}</span>
-              <button className="btn-danger" onClick={() => remove(m)}>
-                Delete
-              </button>
+              <span className="flex shrink-0 gap-2">
+                <button className="btn-quiet !px-3 !py-1.5 text-xs" onClick={() => startEdit(m)}>
+                  Edit
+                </button>
+                <button className="btn-danger" onClick={() => remove(m)}>
+                  Delete
+                </button>
+              </span>
             </li>
           ))}
-          {list.length === 0 && <li className="px-4 py-6 text-center text-zinc-500">Nothing yet.</li>}
+          {list.length === 0 && <li className="px-4 py-6 text-center text-mute">Nothing yet.</li>}
         </ul>
       </div>
     </div>
@@ -175,9 +231,11 @@ function ChaptersTab({ flash }) {
   const [number, setNumber] = useState('')
   const [title, setTitle] = useState('')
   const [busyId, setBusyId] = useState(null)
+  const [openId, setOpenId] = useState(null) // chapter whose pages are shown
+  const [pages, setPages] = useState([])
 
   useEffect(() => {
-    api.manga.list({ pageSize: 100 }).then((r) => setList(r.items)).catch((e) => flash('err', e.message))
+    api.manga.list({ pageSize: 100 }).then((r) => setList(r?.items || [])).catch((e) => flash('err', e.message))
   }, [flash])
 
   const reload = useCallback(
@@ -186,8 +244,24 @@ function ChaptersTab({ flash }) {
   )
 
   useEffect(() => {
+    setOpenId(null)
     reload(slug).catch((e) => flash('err', e.message))
   }, [slug, reload, flash])
+
+  const loadPages = useCallback(
+    (chapter) => api.chapters.read(slug, chapter.number).then((c) => setPages(c.pages)),
+    [slug],
+  )
+
+  const togglePages = async (chapter) => {
+    if (openId === chapter.id) return setOpenId(null)
+    try {
+      await loadPages(chapter)
+      setOpenId(chapter.id)
+    } catch (err) {
+      flash('err', err.message)
+    }
+  }
 
   const addChapter = async (e) => {
     e.preventDefault()
@@ -206,9 +280,10 @@ function ChaptersTab({ flash }) {
     if (!files?.length) return
     setBusyId(chapter.id)
     try {
-      const pages = await api.chapters.uploadPages(chapter.id, files)
-      flash('ok', `Uploaded ${pages.length} page(s) to chapter ${chapter.number}`)
+      const added = await api.chapters.uploadPages(chapter.id, files)
+      flash('ok', `Uploaded ${added.length} page(s) to chapter ${chapter.number}`)
       await reload()
+      if (openId === chapter.id) await loadPages(chapter)
     } catch (err) {
       flash('err', err.message)
     } finally {
@@ -221,7 +296,18 @@ function ChaptersTab({ flash }) {
     try {
       await api.chapters.remove(c.id)
       flash('ok', `Deleted chapter ${c.number}`)
+      if (openId === c.id) setOpenId(null)
       await reload()
+    } catch (err) {
+      flash('err', err.message)
+    }
+  }
+
+  const removePage = async (chapter, page) => {
+    if (!window.confirm(`Delete page ${page.pageNumber}?`)) return
+    try {
+      await api.chapters.removePage(page.id)
+      await Promise.all([reload(), loadPages(chapter)])
     } catch (err) {
       flash('err', err.message)
     }
@@ -241,43 +327,83 @@ function ChaptersTab({ flash }) {
       {manga && (
         <>
           <form onSubmit={addChapter} className="flex flex-wrap gap-3">
-            <input className="input w-32" type="number" step="0.01" min="0" placeholder="Number *" value={number} onChange={(e) => setNumber(e.target.value)} required />
+            <input
+              className="input !w-32"
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="Number *"
+              value={number}
+              onChange={(e) => setNumber(e.target.value)}
+              required
+            />
             <input className="input flex-1" placeholder="Title (optional)" value={title} onChange={(e) => setTitle(e.target.value)} />
             <button className="btn">Add chapter</button>
           </form>
 
-          <ul className="divide-y divide-zinc-800 rounded-xl border border-zinc-800">
+          <ul className="card divide-y divide-line overflow-hidden">
             {manga.chapters.map((c) => (
-              <li key={c.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm">
-                <span>
-                  Chapter {c.number}
-                  {c.title ? <span className="text-zinc-500"> — {c.title}</span> : null}
-                  <span className="ml-2 text-xs text-zinc-500">{c.pageCount} pages</span>
-                </span>
-                <span className="flex items-center gap-3">
-                  <label className="btn-ghost cursor-pointer text-xs">
-                    {busyId === c.id ? 'Uploading…' : 'Upload pages'}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      hidden
-                      disabled={busyId === c.id}
-                      onChange={(e) => {
-                        upload(c, e.target.files)
-                        e.target.value = ''
-                      }}
-                    />
-                  </label>
-                  <button className="btn-danger" onClick={() => removeChapter(c)}>
-                    Delete
-                  </button>
-                </span>
+              <li key={c.id} className="text-sm">
+                <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+                  <span>
+                    Chapter {c.number}
+                    {c.title ? <span className="text-mute"> — {c.title}</span> : null}
+                    <span className="ml-2 text-xs text-mute">{c.pageCount} pages</span>
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <button className="btn-quiet !px-3 !py-1.5 text-xs" onClick={() => togglePages(c)}>
+                      {openId === c.id ? 'Hide pages' : 'Pages'}
+                    </button>
+                    <label className="btn-quiet cursor-pointer !px-3 !py-1.5 text-xs">
+                      {busyId === c.id ? 'Uploading…' : 'Upload'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        hidden
+                        disabled={busyId === c.id}
+                        onChange={(e) => {
+                          upload(c, e.target.files)
+                          e.target.value = ''
+                        }}
+                      />
+                    </label>
+                    <button className="btn-danger" onClick={() => removeChapter(c)}>
+                      Delete
+                    </button>
+                  </span>
+                </div>
+
+                {openId === c.id && (
+                  <div className="border-t border-line bg-sunk px-4 py-4">
+                    {pages.length === 0 ? (
+                      <p className="text-mute">No pages uploaded yet.</p>
+                    ) : (
+                      <div className="grid grid-cols-3 gap-3 sm:grid-cols-5 md:grid-cols-6">
+                        {pages.map((p) => (
+                          <div key={p.id} className="group relative">
+                            <img src={p.imageUrl} alt={`Page ${p.pageNumber}`} loading="lazy" className="aspect-[2/3] w-full rounded border border-line object-cover" />
+                            <span className="absolute left-1 top-1 rounded bg-black/70 px-1.5 text-[10px] text-white">{p.pageNumber}</span>
+                            <button
+                              onClick={() => removePage(c, p)}
+                              className="absolute right-1 top-1 rounded bg-accent px-1.5 text-[11px] font-bold text-accent-ink opacity-0 transition group-hover:opacity-100 focus:opacity-100"
+                              aria-label={`Delete page ${p.pageNumber}`}
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </li>
             ))}
-            {manga.chapters.length === 0 && <li className="px-4 py-6 text-center text-zinc-500">No chapters yet.</li>}
+            {manga.chapters.length === 0 && <li className="px-4 py-6 text-center text-mute">No chapters yet.</li>}
           </ul>
-          <p className="text-xs text-zinc-500">Pages are numbered in the order the files are selected — pick them in reading order.</p>
+          <p className="text-xs text-mute">
+            Uploaded pages are numbered in the order the files are selected — pick them in reading order.
+          </p>
         </>
       )}
     </div>
@@ -290,7 +416,7 @@ function GenresTab({ flash }) {
   const [genres, setGenres] = useState([])
   const [name, setName] = useState('')
 
-  const load = useCallback(() => api.genres.list().then(setGenres), [])
+  const load = useCallback(() => api.genres.list().then((g) => setGenres(g || [])), [])
   useEffect(() => {
     load().catch((e) => flash('err', e.message))
   }, [load, flash])
@@ -321,7 +447,7 @@ function GenresTab({ flash }) {
         <input className="input" placeholder="New genre" value={name} onChange={(e) => setName(e.target.value)} required maxLength={100} />
         <button className="btn">Add</button>
       </form>
-      <ul className="divide-y divide-zinc-800 rounded-xl border border-zinc-800">
+      <ul className="card divide-y divide-line overflow-hidden">
         {genres.map((g) => (
           <li key={g.id} className="flex items-center justify-between px-4 py-2.5 text-sm">
             {g.name}

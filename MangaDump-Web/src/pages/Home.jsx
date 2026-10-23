@@ -16,10 +16,10 @@ const SORTS = [
 const DEFAULT_FILTERS = { sort: 'updated', status: '', include: [], exclude: [] }
 
 const fromServer = (s) => ({
-  sort: s.sort || 'updated',
-  status: s.status ?? '',
-  include: s.includeGenres ?? [],
-  exclude: s.excludeGenres ?? [],
+  sort: s?.sort || 'updated',
+  status: s?.status ?? '',
+  include: Array.isArray(s?.includeGenres) ? s.includeGenres : [],
+  exclude: Array.isArray(s?.excludeGenres) ? s.excludeGenres : [],
 })
 
 export default function Home() {
@@ -77,11 +77,13 @@ export default function Home() {
     let cancelled = false
     setLoading(true)
     setError('')
+    const inc = filters.include || []
+    const exc = filters.exclude || []
     api.manga
       .list({
         search: debounced,
-        genres: filters.include.join(','),
-        excludeGenres: filters.exclude.join(','),
+        genres: inc.join(','),
+        excludeGenres: exc.join(','),
         status: filters.status,
         sort: filters.sort === 'updated' ? '' : filters.sort,
         page,
@@ -96,7 +98,7 @@ export default function Home() {
   }, [filtersReady, debounced, filters, page])
 
   const activeCount = useMemo(
-    () => filters.include.length + filters.exclude.length + (filters.status ? 1 : 0) + (filters.sort !== 'updated' ? 1 : 0),
+    () => (filters.include?.length || 0) + (filters.exclude?.length || 0) + (filters.status ? 1 : 0) + (filters.sort !== 'updated' ? 1 : 0),
     [filters],
   )
 
@@ -108,11 +110,13 @@ export default function Home() {
 
   // tap once = must have it, tap twice = hide it, tap again = off
   const cycleGenre = (slug) => {
-    const included = filters.include.includes(slug)
-    const excluded = filters.exclude.includes(slug)
-    if (!included && !excluded) change({ include: [...filters.include, slug] })
-    else if (included) change({ include: filters.include.filter((s) => s !== slug), exclude: [...filters.exclude, slug] })
-    else change({ exclude: filters.exclude.filter((s) => s !== slug) })
+    const inc = filters.include || []
+    const exc = filters.exclude || []
+    const included = inc.includes(slug)
+    const excluded = exc.includes(slug)
+    if (!included && !excluded) change({ include: [...inc, slug] })
+    else if (included) change({ include: inc.filter((s) => s !== slug), exclude: [...exc, slug] })
+    else change({ exclude: exc.filter((s) => s !== slug) })
   }
 
   const saveDefaults = async () => {
@@ -132,7 +136,7 @@ export default function Home() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
         <div>
           <h1 className="font-display text-3xl font-bold">Browse</h1>
           {result && (
@@ -143,7 +147,7 @@ export default function Home() {
         </div>
 
         <div className="flex w-full gap-2 sm:w-auto">
-          <label className="relative flex-1 sm:w-72">
+          <label className="relative min-w-0 flex-1 sm:w-72 sm:flex-none lg:w-96">
             <SearchIcon className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-mute" />
             <input
               className="input !pl-9"
@@ -205,9 +209,11 @@ export default function Home() {
           <div>
             <label className="label">Genres — tap once to require, twice to hide</label>
             <div className="flex flex-wrap gap-2">
-              {genres.map((g) => {
-                const included = filters.include.includes(g.slug)
-                const excluded = filters.exclude.includes(g.slug)
+              {(genres || []).map((g) => {
+                const inc = filters.include || []
+                const exc = filters.exclude || []
+                const included = inc.includes(g.slug)
+                const excluded = exc.includes(g.slug)
                 return (
                   <button
                     key={g.id}
@@ -247,11 +253,7 @@ export default function Home() {
           <p className="mt-1 text-sm text-mute">Try a different search or loosen your filters.</p>
         </div>
       ) : (
-        <div
-          className={`grid grid-cols-2 gap-x-4 gap-y-6 transition-opacity sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 ${
-            loading ? 'opacity-60' : ''
-          }`}
-        >
+        <div className={`poster-grid transition-opacity ${loading ? 'opacity-60' : ''}`}>
           {result?.items.map((m, i) => (
             <MangaCard key={m.id} manga={m} index={i} subtitle={`${m.chapterCount} chapter${m.chapterCount === 1 ? '' : 's'}`} />
           ))}

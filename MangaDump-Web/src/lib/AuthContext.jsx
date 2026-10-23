@@ -10,11 +10,19 @@ export function AuthProvider({ children }) {
   // On first load, try to restore the session from the HttpOnly refresh cookie
   useEffect(() => {
     let cancelled = false
-    refreshSession().then((session) => {
-      if (cancelled) return
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+    refreshSession()
+      .then((session) => {
+        if (cancelled) return
+        setUser(session?.user ?? null)
+      })
+      .catch(() => {
+        if (cancelled) return
+        setUser(null)
+      })
+      .finally(() => {
+        if (cancelled) return
+        setLoading(false)
+      })
     setSessionExpiredHandler(() => setUser(null))
     return () => {
       cancelled = true

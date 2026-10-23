@@ -13,6 +13,174 @@
     }
   ],
   "paths": {
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/manga/{slug}/chapters/{number}": {
       "get": {
         "tags": [
@@ -446,6 +614,354 @@
         }
       }
     },
+    "/api/library": {
+      "get": {
+        "tags": [
+          "Library"
+        ],
+        "parameters": [
+          {
+            "name": "tab",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "following"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 24
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfLibraryItemDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfLibraryItemDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfLibraryItemDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/library/status/{mangaId}": {
+      "get": {
+        "tags": [
+          "Library"
+        ],
+        "parameters": [
+          {
+            "name": "mangaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryStatusDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryStatusDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/library/{mangaId}/follow": {
+      "put": {
+        "tags": [
+          "Library"
+        ],
+        "parameters": [
+          {
+            "name": "mangaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToggleRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToggleRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToggleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryStatusDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryStatusDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/library/{mangaId}/like": {
+      "put": {
+        "tags": [
+          "Library"
+        ],
+        "parameters": [
+          {
+            "name": "mangaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToggleRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToggleRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToggleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryStatusDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryStatusDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/library/{mangaId}/progress": {
+      "put": {
+        "tags": [
+          "Library"
+        ],
+        "parameters": [
+          {
+            "name": "mangaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProgressRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProgressRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProgressRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/library/filters": {
+      "get": {
+        "tags": [
+          "Library"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterSettingsDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterSettingsDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterSettingsDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Library"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterSettingsDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterSettingsDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterSettingsDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterSettingsDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterSettingsDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterSettingsDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Manga": {
       "get": {
         "tags": [
@@ -460,7 +976,14 @@
             }
           },
           {
-            "name": "Genre",
+            "name": "Genres",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ExcludeGenres",
             "in": "query",
             "schema": {
               "type": "string"
@@ -471,6 +994,13 @@
             "in": "query",
             "schema": {
               "$ref": "#/components/schemas/MangaStatus"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           },
           {
@@ -733,6 +1263,26 @@
   },
   "components": {
     "schemas": {
+      "AuthResponse": {
+        "required": [
+          "accessToken",
+          "expiresAt",
+          "user"
+        ],
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          }
+        }
+      },
       "ChapterReaderDto": {
         "required": [
           "id",
@@ -883,6 +1433,36 @@
           }
         }
       },
+      "FilterSettingsDto": {
+        "type": "object",
+        "properties": {
+          "sort": {
+            "type": "string"
+          },
+          "status": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/MangaStatus"
+              }
+            ]
+          },
+          "includeGenres": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "excludeGenres": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "GenreDto": {
         "required": [
           "id",
@@ -924,6 +1504,190 @@
         "type": "string",
         "format": "binary"
       },
+      "LibraryItemDto": {
+        "required": [
+          "mangaId",
+          "title",
+          "slug",
+          "coverImageUrl",
+          "status",
+          "isFollowing",
+          "isLiked",
+          "lastChapterNumber",
+          "lastPageNumber",
+          "lastChapterPageCount",
+          "nextChapterNumber",
+          "firstChapterNumber",
+          "unreadCount",
+          "lastReadAt"
+        ],
+        "type": "object",
+        "properties": {
+          "mangaId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "coverImageUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/MangaStatus"
+          },
+          "isFollowing": {
+            "type": "boolean"
+          },
+          "isLiked": {
+            "type": "boolean"
+          },
+          "lastChapterNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lastPageNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "lastChapterPageCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "nextChapterNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "firstChapterNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unreadCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "lastReadAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "LibraryStatusDto": {
+        "required": [
+          "isFollowing",
+          "isLiked",
+          "lastChapterNumber",
+          "lastPageNumber",
+          "lastChapterPageCount",
+          "nextChapterNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "isFollowing": {
+            "type": "boolean"
+          },
+          "isLiked": {
+            "type": "boolean"
+          },
+          "lastChapterNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lastPageNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "lastChapterPageCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "nextChapterNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "LoginRequest": {
+        "required": [
+          "identifier",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "identifier": {
+            "maxLength": 256,
+            "minLength": 0,
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 128,
+            "minLength": 0,
+            "type": "string"
+          }
+        }
+      },
       "MangaDetailDto": {
         "required": [
           "id",
@@ -938,7 +1702,9 @@
           "createdAt",
           "updatedAt",
           "genres",
-          "chapters"
+          "chapters",
+          "likeCount",
+          "followerCount"
         ],
         "type": "object",
         "properties": {
@@ -1011,6 +1777,22 @@
             "items": {
               "$ref": "#/components/schemas/ChapterSummaryDto"
             }
+          },
+          "likeCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "followerCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -1130,6 +1912,55 @@
       "MangaStatus": {
         "type": "integer"
       },
+      "PagedResultOfLibraryItemDto": {
+        "required": [
+          "items",
+          "page",
+          "pageSize",
+          "totalCount"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LibraryItemDto"
+            }
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "PagedResultOfMangaListItemDto": {
         "required": [
           "items",
@@ -1207,15 +2038,121 @@
             "type": "string"
           }
         }
+      },
+      "ProgressRequest": {
+        "type": "object",
+        "properties": {
+          "chapterNumber": {
+            "maximum": 99999,
+            "minimum": 0,
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "pageNumber": {
+            "maximum": 10000,
+            "minimum": 1,
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "RegisterRequest": {
+        "required": [
+          "userName",
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "userName": {
+            "maxLength": 32,
+            "minLength": 3,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          },
+          "email": {
+            "maxLength": 256,
+            "minLength": 0,
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 128,
+            "minLength": 10,
+            "type": "string"
+          },
+          "displayName": {
+            "maxLength": 60,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ToggleRequest": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UserDto": {
+        "required": [
+          "id",
+          "userName",
+          "email",
+          "displayName",
+          "roles"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       }
     }
   },
   "tags": [
     {
+      "name": "Auth"
+    },
+    {
       "name": "Chapters"
     },
     {
       "name": "Genres"
+    },
+    {
+      "name": "Library"
     },
     {
       "name": "Manga"

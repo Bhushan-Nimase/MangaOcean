@@ -45,7 +45,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             e.Property(x => x.LastChapterNumber).HasPrecision(8, 2);
 
             e.HasOne(x => x.User)
-                .WithMany()
+                .WithMany(u => u.LibraryEntries)
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -64,8 +64,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             e.Property(x => x.ExcludedGenres).HasMaxLength(500);
 
             e.HasOne(x => x.User)
-                .WithMany()
-                .HasForeignKey(x => x.UserId)
+                .WithOne(u => u.FilterSetting)
+                .HasForeignKey<UserFilterSetting>(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
 

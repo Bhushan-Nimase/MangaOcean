@@ -19,32 +19,37 @@ export default function Navbar() {
     }`
 
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-paper/90 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
-        <div className="flex items-center gap-6">
-          <Link to="/" className="flex items-center gap-2 font-display text-xl font-bold tracking-tight">
-            <span className="inline-block h-3 w-3 rounded-[3px] bg-accent" aria-hidden="true" />
-            MangaDump
-          </Link>
+    <header className="sticky top-0 z-30 w-full border-b border-line bg-paper/90 backdrop-blur">
+      {/*
+        Phone: logo + buttons on the first row, links on a second row.
+        Tablet and up: everything on one row, links next to the logo.
+      */}
+      <div className="page-x flex w-full flex-wrap items-center justify-between gap-x-3 gap-y-1.5 py-2 sm:h-14 sm:flex-nowrap sm:gap-x-6 sm:py-0">
+        <Link
+          to="/"
+          className="order-1 flex shrink-0 items-center gap-2 font-display text-lg sm:text-xl font-bold tracking-tight"
+        >
+          <span className="inline-block h-3 w-3 rounded-[3px] bg-accent" aria-hidden="true" />
+          MangaDump
+        </Link>
 
-          <nav className="flex items-center gap-5">
-            <NavLink to="/" end className={link}>
-              Browse
+        <nav className="order-3 flex w-full items-center gap-4 sm:order-2 sm:w-auto sm:flex-1 sm:gap-6">
+          <NavLink to="/" end className={link}>
+            Browse
+          </NavLink>
+          {user && (
+            <NavLink to="/library" className={link}>
+              Library
             </NavLink>
-            {user && (
-              <NavLink to="/library" className={link}>
-                Library
-              </NavLink>
-            )}
-            {isAdmin && (
-              <NavLink to="/admin" className={link}>
-                Admin
-              </NavLink>
-            )}
-          </nav>
-        </div>
+          )}
+          {isAdmin && (
+            <NavLink to="/admin" className={link}>
+              Admin
+            </NavLink>
+          )}
+        </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="order-2 flex shrink-0 items-center gap-2 sm:order-3">
           <button
             onClick={toggle}
             className="btn-quiet !px-2.5"
@@ -56,7 +61,7 @@ export default function Navbar() {
 
           {loading ? null : user ? (
             <>
-              <span className="hidden max-w-32 truncate text-sm text-mute sm:inline">
+              <span className="hidden max-w-40 truncate text-sm text-mute md:inline">
                 {user.displayName || user.userName}
               </span>
               <button onClick={handleLogout} className="btn-quiet">

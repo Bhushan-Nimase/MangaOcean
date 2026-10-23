@@ -1,5 +1,107 @@
 [
   {
+    "ContainingType": "MangaDump.Controllers.Api.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "MangaDump.Dtos.LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MangaDump.Dtos.AuthResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MangaDump.Controllers.Api.AuthController",
+    "Method": "Logout",
+    "RelativePath": "api/auth/logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MangaDump.Controllers.Api.AuthController",
+    "Method": "Me",
+    "RelativePath": "api/auth/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "MangaDump.Dtos.UserDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MangaDump.Controllers.Api.AuthController",
+    "Method": "Refresh",
+    "RelativePath": "api/auth/refresh",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "MangaDump.Dtos.AuthResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MangaDump.Controllers.Api.AuthController",
+    "Method": "Register",
+    "RelativePath": "api/auth/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "MangaDump.Dtos.RegisterRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MangaDump.Dtos.AuthResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "MangaDump.Controllers.Api.ChaptersController",
     "Method": "GetById",
     "RelativePath": "api/chapters/{id}",
@@ -166,6 +268,197 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "MangaDump.Controllers.Api.LibraryController",
+    "Method": "GetList",
+    "RelativePath": "api/library",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tab",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MangaDump.Dtos.PagedResult\u00601[[MangaDump.Dtos.LibraryItemDto, MangaDump, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MangaDump.Controllers.Api.LibraryController",
+    "Method": "Follow",
+    "RelativePath": "api/library/{mangaId}/follow",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "mangaId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MangaDump.Dtos.ToggleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MangaDump.Dtos.LibraryStatusDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MangaDump.Controllers.Api.LibraryController",
+    "Method": "Like",
+    "RelativePath": "api/library/{mangaId}/like",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "mangaId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MangaDump.Dtos.ToggleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MangaDump.Dtos.LibraryStatusDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MangaDump.Controllers.Api.LibraryController",
+    "Method": "Progress",
+    "RelativePath": "api/library/{mangaId}/progress",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "mangaId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MangaDump.Dtos.ProgressRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MangaDump.Controllers.Api.LibraryController",
+    "Method": "GetFilters",
+    "RelativePath": "api/library/filters",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "MangaDump.Dtos.FilterSettingsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MangaDump.Controllers.Api.LibraryController",
+    "Method": "SaveFilters",
+    "RelativePath": "api/library/filters",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "MangaDump.Dtos.FilterSettingsDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MangaDump.Dtos.FilterSettingsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MangaDump.Controllers.Api.LibraryController",
+    "Method": "Status",
+    "RelativePath": "api/library/status/{mangaId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "mangaId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MangaDump.Dtos.LibraryStatusDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "MangaDump.Controllers.Api.MangaController",
     "Method": "GetAll",
     "RelativePath": "api/Manga",
@@ -179,13 +472,23 @@
         "IsRequired": false
       },
       {
-        "Name": "Genre",
+        "Name": "Genres",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExcludeGenres",
         "Type": "System.String",
         "IsRequired": false
       },
       {
         "Name": "Status",
         "Type": "System.Nullable\u00601[[MangaDump.Models.MangaStatus, MangaDump, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Sort",
+        "Type": "System.String",
         "IsRequired": false
       },
       {

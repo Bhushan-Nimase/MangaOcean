@@ -81,8 +81,9 @@ public class AuthController(
     {
         if (!HasCsrfHeader()) return BadRequest();
 
+        // No cookie = simply not logged in. 204 (not 401) keeps the browser console free of red errors for guests.
         if (!Request.Cookies.TryGetValue(RefreshCookie, out var raw) || string.IsNullOrEmpty(raw))
-            return Unauthorized();
+            return NoContent();
 
         var hash = TokenService.Hash(raw);
         var stored = await db.RefreshTokens

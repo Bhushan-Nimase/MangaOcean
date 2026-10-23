@@ -1,10 +1,21 @@
 @host = https://localhost:7197
 
+### 1) Log in first. Admin = seeded account from appsettings.Development.json (SeedAdmin)
+# @name login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "identifier": "admin", "password": "ChangeMe-Admin2026" }
+
+###
+@token = {{login.response.body.$.accessToken}}
+
 ### Genres (seeded ids: 1 Action, 2 Adventure, 3 Comedy, 4 Drama, 5 Fantasy, 6 Horror, 7 Mystery, 8 Romance, 9 Sci-Fi, 10 Slice of Life)
 GET {{host}}/api/genres
 
-### Create a manga
+### Create a manga (admin)
 POST {{host}}/api/manga
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -17,65 +28,64 @@ Content-Type: application/json
   "genreIds": [1, 2, 3]
 }
 
-### List / search / filter
-GET {{host}}/api/manga?search=piece&genre=action&status=Ongoing&page=1&pageSize=20
+### Public list + search (no login needed)
+GET {{host}}/api/manga?search=piece&page=1&pageSize=20
 
-### Manga detail by slug
+### Filters and sorting need a login (members only)
+GET {{host}}/api/manga?genres=action,comedy&excludeGenres=horror&status=Ongoing&sort=popular
+Authorization: Bearer {{token}}
+
+### Manga detail (includes likeCount / followerCount)
 GET {{host}}/api/manga/one-piece
 
-### Update manga (id 1)
-PUT {{host}}/api/manga/1
-Content-Type: application/json
-
-{
-  "title": "One Piece",
-  "description": "Updated description.",
-  "author": "Eiichiro Oda",
-  "artist": "Eiichiro Oda",
-  "status": "Ongoing",
-  "releaseYear": 1997,
-  "genreIds": [1, 2]
-}
-
-### Upload cover (replace the file path with a real image)
-POST {{host}}/api/manga/1/cover
-Content-Type: multipart/form-data; boundary=----Boundary
-
-------Boundary
-Content-Disposition: form-data; name="file"; filename="cover.jpg"
-Content-Type: image/jpeg
-
-< C:\path\to\cover.jpg
-------Boundary--
-
-### Create chapter
+### Create chapter (admin)
 POST {{host}}/api/manga/1/chapters
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 { "number": 1, "title": "Romance Dawn" }
 
-### Upload chapter pages (field name must be "files"; repeat the part for each page)
-POST {{host}}/api/chapters/1/pages
-Content-Type: multipart/form-data; boundary=----Boundary
-
-------Boundary
-Content-Disposition: form-data; name="files"; filename="001.jpg"
-Content-Type: image/jpeg
-
-< C:\path\to\001.jpg
-------Boundary
-Content-Disposition: form-data; name="files"; filename="002.jpg"
-Content-Type: image/jpeg
-
-< C:\path\to\002.jpg
-------Boundary--
-
 ### Reader endpoint (pages + previous/next chapter)
 GET {{host}}/api/manga/one-piece/chapters/1
 
-### Delete a page / chapter / manga
-DELETE {{host}}/api/pages/1
+### ---- Library (any logged-in user) ----
+
+### Follow / like
+PUT {{host}}/api/library/1/follow
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "value": true }
+
 ###
-DELETE {{host}}/api/chapters/1
+PUT {{host}}/api/library/1/like
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "value": true }
+
+### Save reading position (chapter 1, page 7)
+PUT {{host}}/api/library/1/progress
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "chapterNumber": 1, "pageNumber": 7 }
+
+### My library: following | liked | history
+GET {{host}}/api/library?tab=following
+Authorization: Bearer {{token}}
+
+### Status of one manga for me
+GET {{host}}/api/library/status/1
+Authorization: Bearer {{token}}
+
+### My saved filter defaults
+GET {{host}}/api/library/filters
+Authorization: Bearer {{token}}
+
 ###
-DELETE {{host}}/api/manga/1
+PUT {{host}}/api/library/filters
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "sort": "popular", "status": "Ongoing", "includeGenres": ["action"], "excludeGenres": ["horror"] }

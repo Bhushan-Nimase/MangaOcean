@@ -146,3 +146,40 @@ body {
 .notice-ok {
   @apply rounded-lg border border-sage/30 bg-sage-soft px-3 py-2 text-sm text-sage;
 }
+
+/* ---------- Full-screen layout ---------- */
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Horizontal page padding that grows with the screen: used by the header and <main> so they line up */
+.page-x {
+  @apply px-4 sm:px-6 lg:px-10 2xl:px-16;
+}
+
+/* Cover grid: as many columns as fit, from 2 on a phone to 8+ on a wide monitor */
+.poster-grid {
+  display: grid;
+  gap: 1.5rem 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(8.75rem, 1fr));
+}
+
+@media (min-width: 40rem) {
+  .poster-grid {
+    grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  }
+}
+
+@media (min-width: 100rem) {
+  .poster-grid {
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: 2rem 1.25rem;
+  }
+}

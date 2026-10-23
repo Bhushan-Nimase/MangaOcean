@@ -40,6 +40,8 @@ export function refreshSession() {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
     })
       .then(async (res) => {
+        // Not logged in (no refresh cookie): the server answers 204 on purpose, so guests get no console errors
+        if (res.status === 204) return null
         if (!res.ok) {
           accessToken = null
           return null

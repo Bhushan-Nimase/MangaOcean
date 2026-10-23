@@ -30,11 +30,13 @@ export default function Login() {
   }
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-sm">
-      <h1 className="mb-6 text-2xl font-bold">Welcome back</h1>
-      <form onSubmit={submit} className="space-y-4">
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-sm pt-6">
+      <h1 className="font-display text-3xl font-bold">Welcome back</h1>
+      <p className="mb-6 mt-1 text-sm text-mute">Log in to follow manga and keep your place.</p>
+
+      <form onSubmit={submit} className="card space-y-4 p-5">
         <div>
-          <label className="mb-1 block text-xs text-zinc-400">Username or email</label>
+          <label className="label">Username or email</label>
           <input
             className="input"
             value={identifier}
@@ -44,7 +46,7 @@ export default function Login() {
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-zinc-400">Password</label>
+          <label className="label">Password</label>
           <input
             type="password"
             className="input"
@@ -55,16 +57,16 @@ export default function Login() {
           />
         </div>
 
-        {error && <p className="rounded-lg bg-red-500/10 p-3 text-sm text-red-300">{error}</p>}
+        {error && <p className="notice-err">{error}</p>}
 
         <button className="btn w-full" disabled={busy}>
           {busy ? 'Signing in…' : 'Log in'}
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-zinc-400">
+      <p className="mt-6 text-center text-sm text-mute">
         New here?{' '}
-        <Link to="/register" className="text-violet-400 hover:underline">
+        <Link to="/register" className="font-medium text-accent hover:underline">
           Create an account
         </Link>
       </p>

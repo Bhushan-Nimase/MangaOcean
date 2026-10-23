@@ -38,9 +38,11 @@ export default function Register() {
   }
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-sm">
-      <h1 className="mb-6 text-2xl font-bold">Create your account</h1>
-      <form onSubmit={submit} className="space-y-4">
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-sm pt-6">
+      <h1 className="font-display text-3xl font-bold">Create your account</h1>
+      <p className="mb-6 mt-1 text-sm text-mute">Free. Unlocks filters, your library and saved progress.</p>
+
+      <form onSubmit={submit} className="card space-y-4 p-5">
         <Field label="Username">
           <input className="input" value={form.userName} onChange={set('userName')} autoComplete="username" required />
         </Field>
@@ -71,16 +73,16 @@ export default function Register() {
           />
         </Field>
 
-        {error && <p className="rounded-lg bg-red-500/10 p-3 text-sm text-red-300">{error}</p>}
+        {error && <p className="notice-err">{error}</p>}
 
         <button className="btn w-full" disabled={busy}>
           {busy ? 'Creating…' : 'Sign up'}
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-zinc-400">
+      <p className="mt-6 text-center text-sm text-mute">
         Already have an account?{' '}
-        <Link to="/login" className="text-violet-400 hover:underline">
+        <Link to="/login" className="font-medium text-accent hover:underline">
           Log in
         </Link>
       </p>
@@ -91,9 +93,9 @@ export default function Register() {
 function Field({ label, hint, children }) {
   return (
     <div>
-      <label className="mb-1 block text-xs text-zinc-400">{label}</label>
+      <label className="label">{label}</label>
       {children}
-      {hint && <p className="mt-1 text-[11px] text-zinc-500">{hint}</p>}
+      {hint && <p className="mt-1 text-[11px] text-mute">{hint}</p>}
     </div>
   )
 }

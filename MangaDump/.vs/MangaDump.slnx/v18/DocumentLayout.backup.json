@@ -1,18 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Bhushan\\OneDrive\\Attachments\\Desktop\\Asher\\MangaDump\\",
+  "WorkspaceRootPath": "C:\\Users\\Bhushan\\Desktop\\Asher\\MangaOcean\\MangaDump\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{86766B2D-B9EA-5517-58C0-4524C63AF9C5}|MangaDump.csproj|c:\\users\\bhushan\\onedrive\\attachments\\desktop\\asher\\mangadump\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{86766B2D-B9EA-5517-58C0-4524C63AF9C5}|MangaDump.csproj|solutionrelative:data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{86766B2D-B9EA-5517-58C0-4524C63AF9C5}|MangaDump.csproj|c:\\users\\bhushan\\onedrive\\attachments\\desktop\\asher\\mangadump\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{86766B2D-B9EA-5517-58C0-4524C63AF9C5}|MangaDump.csproj|c:\\users\\bhushan\\desktop\\asher\\mangaocean\\mangadump\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{86766B2D-B9EA-5517-58C0-4524C63AF9C5}|MangaDump.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{86766B2D-B9EA-5517-58C0-4524C63AF9C5}|MangaDump.csproj|c:\\users\\bhushan\\onedrive\\attachments\\desktop\\asher\\mangadump\\mangadump.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{86766B2D-B9EA-5517-58C0-4524C63AF9C5}|MangaDump.csproj|solutionrelative:mangadump.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -35,39 +27,15 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "AppDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\Bhushan\\OneDrive\\Attachments\\Desktop\\Asher\\MangaDump\\Data\\AppDbContext.cs",
-              "RelativeDocumentMoniker": "Data\\AppDbContext.cs",
-              "ToolTip": "C:\\Users\\Bhushan\\OneDrive\\Attachments\\Desktop\\Asher\\MangaDump\\Data\\AppDbContext.cs",
-              "RelativeToolTip": "Data\\AppDbContext.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAowGAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-21T08:42:40.356Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "MangaDump.csproj",
-              "DocumentMoniker": "C:\\Users\\Bhushan\\OneDrive\\Attachments\\Desktop\\Asher\\MangaDump\\MangaDump.csproj",
-              "RelativeDocumentMoniker": "MangaDump.csproj",
-              "ToolTip": "C:\\Users\\Bhushan\\OneDrive\\Attachments\\Desktop\\Asher\\MangaDump\\MangaDump.csproj",
-              "RelativeToolTip": "MangaDump.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAABRwBwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-10-21T08:37:06.839Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Bhushan\\OneDrive\\Attachments\\Desktop\\Asher\\MangaDump\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\Bhushan\\Desktop\\Asher\\MangaOcean\\MangaDump\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\Bhushan\\OneDrive\\Attachments\\Desktop\\Asher\\MangaDump\\Program.cs",
+              "ToolTip": "C:\\Users\\Bhushan\\Desktop\\Asher\\MangaOcean\\MangaDump\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAwBgAAAA7AAAAAAAAAA==",
+              "ViewState": "AgIAAMsAAAAAAAAAAAAQwKoAAABlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-15T08:15:32.761Z"
+              "WhenOpened": "2026-10-15T08:15:32.761Z",
+              "EditorCaption": ""
             }
           ]
         }
